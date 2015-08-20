@@ -1,0 +1,102 @@
+<!--
+// jsFlashEngine https://github.com/crpietschmann/jsFlashEngine
+// Copyright (c) 2015 Chris Pietschmann http://pietschsoft.com
+// Licensed under MIT License https://github.com/crpietschmann/jsFlashEngine/blob/master/LICENSE
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>jsFlashEngine</title>
+		
+		<link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.4/css/bootstrap.min.css" />
+    	<link rel="stylesheet" type="text/css" href="css/jsFlashEngine.css">
+
+    	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.js"></script>
+    	<script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+    	<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.4/bootstrap.min.js"></script>
+    	<script src="js/jsFlashEngine.js"></script>
+    	<script>
+        	var flashEngine = null;
+			$(function () {
+				flashEngine = jsFlashEngine($('#jsFlashEngine'), { flashUrl: 'flashcards/flashcardset1.htm' });
+			});
+    	</script>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#" onclick="location.reload()">jqFlashEngine</a>
+				</div>
+				<div id="navbar" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#" onclick="location.reload()">Reset</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<section class="container">
+
+			<div id="jsFlashEngine">
+				<section id="title" data-bind="visible: !flashStarted()">
+					<div class="jumbotron">
+						<h1 data-bind="text: flashTitle"></h1>
+						<p data-bind="text: flashSubTitle"></p>
+						<p><button class="btn btn-primary btn-lg" data-bind="click: startFlash">Start Flash Cards</button></p>
+					</div>
+				</section>
+				<section class="flash" data-bind="visible: flashStarted() && !flashComplete()">
+					<div>Flash Card <span data-bind="text: currentFlashCardIndex"></span> of <span data-bind="text: flashcardCount"></span></div>
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-bind="attr: { 'aria-valuenow': currentProgress }, style: { width: currentProgress() + '%' }"></div>
+					</div>
+					<div class="flashcard-pool"></div>
+					<div class="correct-indicator pull-right">
+						<label><input type="checkbox" data-bind="checked: isFlashCardCorrect"/> Correct?</label>
+					</div>
+					<button class="btn btn-default" data-bind="click: movePreviousFlashCard, disable: currentFlashCardIsFirst">Previous</button>
+					<button class="btn btn-default" data-bind="click: showCurrentFlashCardAnswer">Show Answer</button>
+					<button class="btn btn-primary" data-bind="click: moveNextFlashCard, disable: currentFlashCardIsLast, visible: !currentFlashCardIsLast()">Next</button>
+					<button class="btn btn-primary" data-bind="click: calculateScore, visible: currentFlashCardIsLast">Calculate Score</button>
+				</section>
+				<section class="score" data-bind="visible: flashComplete">
+					<p>Flash Card Set Results:</p>
+					<h2 data-bind="text: flashTitle"></h2>
+					<h3 data-bind="text: flashSubTitle"></h3>
+					
+					<div class="pull-right">
+						<div>Overall Score:</div>
+						<div class="score-total-percent" data-bind="css: { 'text-success': flashPassed, 'text-danger': !flashPassed() }">
+							<span data-bind="text: calculatedScore"></span>%
+						</div>
+					</div>
+
+					<div>Date: <span data-bind="text: calculatedScoreDate"></span></div>					
+					<div>Flash Cards: <span data-bind="text: flashcardCount"></span></div>
+					<div>Correct Flash Cards: <span data-bind="text: totalFlashCardsCorrect"></span></div>
+					
+					<div class="clearfix"></div>
+					
+					<div class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-bind="attr: { 'aria-valuenow': calculatedScore }, style: { width: calculatedScore() + '%' }, css: { 'progress-bar-success': flashPassed, 'progress-bar-danger': !flashPassed() }"></div>
+					</div>
+					<div class="pass-indicator">
+						<h1 data-bind="css: { 'text-success': flashPassed, 'text-danger': !flashPassed() }">
+							<span data-bind="visible: flashPassed">PASS</span>
+							<span data-bind="visible: !flashPassed()">FAIL</span>
+						</h1>
+					</div>
+				</section>
+			</div>
+		</section>
+		<footer class="container">
+			Powered by <a href="https://github.com/crpietschmann/jsFlashEngine">jsFlashEngine</a> by <a href="http://pietschsoft.com">Chris Pietschmann</a>
+		</footer>
+	</body>
+</html>
